@@ -82,11 +82,66 @@ apt install -y \
     gnome-shell-extension-system-monitor \
     bluez bluez-tools rfkill \
     xorg-dev mesa-utils \
+    mesa-va-drivers mesa-vdpau-drivers \
+    mesa-vulkan-drivers mesa-opencl-icd \
+    libegl1-mesa libegl1-mesa-dev \
+    libgl1-mesa-glx libgl1-mesa-dev \
+    libgles2-mesa libgles2-mesa-dev \
+    va-driver-all vdpau-driver-all \
+    intel-media-va-driver i965-va-driver \
     python3-pip python3-dev \
     acpi-support tlp tlp-rdw \
     brightnessctl ddcutil
 
 success "Mise à jour système terminée"
+
+### 1.5. VÉRIFICATION ET OPTIMISATION DES PILOTES MESA ###
+log "[1.5/8] Vérification et optimisation des pilotes Mesa Intel..."
+
+# Vérification de la présence du GPU Intel
+if lspci | grep -i "vga.*intel" > /dev/null; then
+    log "GPU Intel détecté, vérification des pilotes Mesa..."
+    
+    # Information sur la version Mesa installée
+    mesa_version=$(glxinfo | grep "OpenGL version" 2>/dev/null || echo "Non détecté")
+    log "Version Mesa : $mesa_version"
+    
+    # Configuration Mesa pour Intel Iris Xe (UX8406CA)
+    mkdir -p /etc/environment.d
+    cat <<EOF > /etc/environment.d/mesa-intel.conf
+# Configuration Mesa pour Intel Iris Xe Graphics
+MESA_LOADER_DRIVER_OVERRIDE=iris
+INTEL_DEBUG=
+LIBVA_DRIVER_NAME=iHD
+VDPAU_DRIVER=va_gl
+EOF
+
+    # Variables d'environnement pour optimiser Mesa
+    cat <<EOF >> /etc/environment
+# Optimisations Mesa Intel Iris Xe
+MESA_GL_VERSION_OVERRIDE=4.6
+MESA_GLSL_VERSION_OVERRIDE=460
+INTEL_DEBUG=
+LIBVA_DRIVER_NAME=iHD
+EOF
+
+    # Test des capacités graphiques
+    if command -v glxinfo >/dev/null 2>&1; then
+        log "Test des capacités OpenGL..."
+        glx_renderer=$(glxinfo | grep "OpenGL renderer" 2>/dev/null || echo "Non détecté")
+        log "Rendu OpenGL : $glx_renderer"
+        
+        if glxinfo | grep -q "direct rendering: Yes"; then
+            success "Accélération matérielle Mesa activée"
+        else
+            warning "Accélération matérielle non détectée - vérification nécessaire"
+        fi
+    fi
+else
+    warning "GPU Intel non détecté - pilotes Mesa génériques utilisés"
+fi
+
+success "Configuration Mesa terminée"
 
 ### 2. INSTALLATION ET CONFIGURATION DES SCRIPTS COMMUNAUTAIRES ###
 log "[2/8] Installation des scripts zenbook-duo-linux et alesya-h..."
