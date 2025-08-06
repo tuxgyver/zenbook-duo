@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # zenbook_duo_linux_postinstall.sh
 # Script d'installation et de configuration post-installation Ubuntu 25.04 pour ASUS Zenbook Duo UX8406CA-PZ011W
 # Inclut correctifs pour WiFi, second écran, clavier BT, audio, suspend/hibernate
