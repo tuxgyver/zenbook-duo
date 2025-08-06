@@ -89,6 +89,7 @@ apt install -y \
     libgles2-mesa libgles2-mesa-dev \
     va-driver-all vdpau-driver-all \
     intel-media-va-driver i965-va-driver \
+    ubuntu-restricted-extras \
     python3-pip python3-dev \
     acpi-support tlp tlp-rdw \
     brightnessctl ddcutil
