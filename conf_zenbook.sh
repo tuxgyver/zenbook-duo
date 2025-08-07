@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # zenbook_duo_linux_postinstall.sh
-# Script d'installation et de configuration post-installation Ubuntu 25.04 pour ASUS Zenbook Duo UX8406CA-PZ011W
+# Script d'installation et de configuration post-installation AnduinOS pour ASUS Zenbook Duo UX8406CA-PZ011W
 # Inclut correctifs pour WiFi, second écran, clavier BT, audio, suspend/hibernate
 # Version améliorée avec support complet et gestion d'erreurs
 
@@ -48,9 +48,9 @@ mkdir -p "$BACKUP_DIR"
 KERNEL_VERSION=$(uname -r | cut -d. -f1-2)
 log "Version du kernel détectée: $KERNEL_VERSION"
 
-# Vérification de la compatibilité Ubuntu
-if ! grep -q "25.04" /etc/os-release 2>/dev/null; then
-    warning "Ce script est optimisé pour Ubuntu 25.04. Version détectée : $(lsb_release -d | cut -f2)"
+# Vér     ification de la compatibilité Ubuntu
+if ! grep -q "1.3." /etc/os-release 2>/dev/null; then
+    warning "Ce script est optimisé pour AnduinOS 1.3.3 minimun; version détectée : $(lsb_release -d | cut -f2)"
     read -p "Voulez-vous continuer ? (y/N): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
